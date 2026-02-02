@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlowFocus - Pomodoro Timer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 全局样式 - 纯黑白灰色调 */
+        :root {
+            --black: #000000;
+            --dark-gray: #1c1c1e;
+            --gray: #2c2c2e;
+            --light-gray: #3a3a3c;
+            --white: #ffffff;
+            --off-white: #f2f2f7;
+            --accent: #8e8e93;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+        }
+        
+        body {
+            background-color: var(--black);
+            color: var(--white);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+        
+        /* iOS风格容器 */
+        .ios-container {
+            background-color: var(--dark-gray);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 500px;
+            margin-top: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* 头部区域 */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #8e8e93, #aeaeb2);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+        
+        .logo-text {
+            font-size: 24px;
+            font-weight: 700;
+        }
+        
+        /* 设置菜单按钮 */
+        .menu-button {
+            background-color: var(--gray);
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .menu-button:hover {
+            background-color: var(--light-gray);
+            transform: scale(1.05);
+        }
+        
+        .menu-button.active {
+            background-color: var(--light-gray);
+        }
+        
+        /* 下拉菜单 */
+        .dropdown-menu {
+            position: absolute;
+            top: 60px;
+            right: 0;
+            background-color: var(--dark-gray);
+            border-radius: 14px;
+            padding: 12px 0;
+            width: 280px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .dropdown-menu.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        
+        .menu-item {
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .menu-item:hover {
+            background-color: var(--gray);
+        }
+        
+        .menu-item i {
+            width: 20px;
+            color: var(--accent);
+        }
+        
+        .menu-divider {
+            height: 1px;
+            background-color: var(--gray);
+            margin: 8px 0;
+        }
+        
+        /* 计时器区域 */
+        .timer-section {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .timer-status {
+            font-size: 18px;
+            color: var(--accent);
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        
+        .timer-display {
+            font-size: 80px;
+            font-weight: 700;
+            letter-spacing: -2px;
+            margin: 20px 0;
+            transition: all 0.3s;
+        }
+        
+        /* 控制按钮 */
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .control-btn {
+            background-color: var(--gray);
+            border: none;
+            color: var(--white);
+            padding: 16px 28px;
+            border-radius: 16px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 140px;
+            justify-content: center;
+        }
+        
+        .control-btn:hover {
+            background-color: var(--light-gray);
+            transform: scale(1.05);
+        }
+        
+        .control-btn.start {
+            background-color: var(--white);
+            color: var(--black);
+        }
+        
+        .control-btn.start:hover {
+            background-color: #f0f0f0;
+        }
+        
+        .control-btn.reset {
+            background-color: transparent;
+            border: 2px solid var(--gray);
+        }
+        
+        .control-btn.reset:hover {
+            background-color: var(--gray);
+        }
+        
+        /* 统计区域 */
+        .stats-section {
+            background-color: var(--gray);
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+        
+        .stats-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+        
+        .stat-card {
+            background-color: var(--dark-gray);
+            border-radius: 12px;
+            padding: 16px;
+        }
+        
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: var(--accent);
+        }
+        
+        .backup-link {
+            font-size: 12px;
+            color: var(--accent);
+            text-decoration: none;
+            border-bottom: 1px dashed var(--accent);
+            padding-bottom: 1px;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        
+        .backup-link:hover {
+            color: var(--white);
+        }
+        
+        /* 设置表单 */
+        .settings-form {
+            padding: 10px 0;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--accent);
+            font-size: 14px;
+        }
+        
+        .form-input {
+            width: 100%;
+            background-color: var(--gray);
+            border: none;
+            border-radius: 10px;
+            padding: 14px;
+            color: var(--white);
+            font-size: 16px;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            background-color: var(--light-gray);
+        }
+        
+        /* 文件输入区域 */
+        .file-input-container {
+            margin-top: 20px;
+            padding: 15px;
+            border: 2px dashed var(--gray);
+            border-radius: 12px;
+            text-align: center;
+        }
+        
+        .file-input-label {
+            display: block;
+            cursor: pointer;
+            color: var(--accent);
+        }
+        
+        #backupFile {
+            display: none;
+        }
+        
+        /* iOS风格开关 */
+        .ios-toggle {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 30px;
+        }
+        
+        .ios-toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .ios-toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--light-gray);
+            border-radius: 34px;
+            transition: .4s;
+        }
+        
+        .ios-toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            border-radius: 50%;
+            transition: .4s;
+        }
+        
+        input:checked + .ios-toggle-slider {
+            background-color: var(--white);
+        }
+        
+        input:checked + .ios-toggle-slider:before {
+            transform: translateX(20px);
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .timer-display {
+                font-size: 70px;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .control-btn {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .dropdown-menu {
+                width: 250px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .timer-display {
+                font-size: 60px;
+            }
+            
+            .ios-container {
+                padding: 20px 16px;
+            }
+            
+            .dropdown-menu {
+                width: 220px;
+            }
+        }
+        
+        /* 动画效果 */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        .slide-up {
+            animation: slideUp 0.5s ease-out;
+        }
+        
+        /* 进度环 */
+        .progress-ring {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            margin: 0 auto;
+        }
+        
+        .progress-ring-circle {
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+        
+        .progress-ring-bg {
+            fill: none;
+            stroke: var(--gray);
+            stroke-width: 8;
+        }
+        
+        .progress-ring-fill {
+            fill: none;
+            stroke: var(--white);
+            stroke-width: 8;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 1s linear;
+        }
+        
+        .timer-inside {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+        
+        @media (max-width: 768px) {
+            .progress-ring {
+                width: 250px;
+                height: 250px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .progress-ring {
+                width: 220px;
+                height: 220px;
+            }
+        }
+        
+        /* 通知 */
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background-color: var(--dark-gray);
+            color: white;
+            padding: 16px 24px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .notification.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        
+        .notification.success {
+            border-left: 4px solid #34c759;
+        }
+        
+        .notification.error {
+            border-left: 4px solid #ff3b30;
+        }
+    </style>
+</head>
+<body>
+    <!-- 主容器 -->
+    <div class="ios-container fade-in">
+        <!-- 头部 -->
+        <div class="header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-hourglass-half"></i>
+                </div>
+                <div class="logo-text">FlowFocus</div>
+            </div>
+            
+            <!-- 菜单按钮 -->
+            <div class="menu-button" id="menuButton">
+                <i class="fas fa-ellipsis-h"></i>
+            </div>
+            
+            <!-- 下拉菜单 -->
+            <div class="dropdown-menu" id="dropdownMenu">
+                <div class="menu-item" id="settingsItem">
+                    <i class="fas fa-cog"></i>
+                    <span>Timer Settings</span>
+                </div>
+                <div class="menu-item" id="statisticsItem">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Statistics</span>
+                </div>
+                <div class="menu-divider"></div>
+                <div class="menu-item" id="backupItem">
+                    <i class="fas fa-file-export"></i>
+                    <span>Backup Data</span>
+                </div>
+                <div class="menu-item" id="restoreItem">
+                    <i class="fas fa-file-import"></i>
+                    <span>Restore Data</span>
+                </div>
+                <div class="menu-divider"></div>
+                <div class="menu-item" id="aboutItem">
+                    <i class="fas fa-info-circle"></i>
+                    <span>About</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 计时器区域 -->
+        <div class="timer-section">
+            <div class="timer-status" id="timerStatus">Ready to Focus</div>
+            
+            <!-- 进度环 -->
+            <div class="progress-ring">
+                <svg class="progress-ring-circle" width="100%" height="100%" viewBox="0 0 100 100">
+                    <circle class="progress-ring-bg" cx="50" cy="50" r="45"></circle>
+                    <circle class="progress-ring-fill" cx="50" cy="50" r="45" 
+                            stroke-dasharray="283" stroke-dashoffset="283" id="progressCircle"></circle>
+                </svg>
+                <div class="timer-inside">
+                    <div class="timer-display" id="timerDisplay">25:00</div>
+                </div>
+            </div>
+            
+            <!-- 控制按钮 -->
+            <div class="controls">
+                <button class="control-btn start" id="startBtn">
+                    <i class="fas fa-play"></i> Start
+                </button>
+                <button class="control-btn reset" id="resetBtn">
+                    <i class="fas fa-redo"></i> Reset
+                </button>
+            </div>
+        </div>
+        
+        <!-- 统计区域 -->
+        <div class="stats-section slide-up" id="statsSection">
+            <div class="stats-title">
+                <span>Today's Statistics</span>
+                <a class="backup-link" id="downloadBackupLink">Download backup</a>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="sessionsToday">0</div>
+                    <div class="stat-label">Sessions Completed</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="focusTimeToday">0min</div>
+                    <div class="stat-label">Focus Time</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="totalSessions">0</div>
+                    <div class="stat-label">Total Sessions</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="totalFocusTime">0min</div>
+                    <div class="stat-label">Total Focus Time</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 设置面板 (默认隐藏) -->
+        <div class="settings-form" id="settingsForm" style="display: none;">
+            <div class="form-group">
+                <label class="form-label">Focus Duration (minutes)</label>
+                <input type="number" class="form-input" id="focusTime" min="1" max="90" value="25">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Break Duration (minutes)</label>
+                <input type="number" class="form-input" id="breakTime" min="1" max="30" value="5">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Long Break Duration (minutes)</label>
+                <input type="number" class="form-input" id="longBreakTime" min="1" max="45" value="15">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Sessions before Long Break</label>
+                <input type="number" class="form-input" id="sessionsBeforeLongBreak" min="1" max="10" value="4">
+            </div>
+            
+            <div class="form-group">
+                <label style="display: flex; justify-content: space-between; align-items: center;">
+                    <span class="form-label">Enable Notifications</span>
+                    <label class="ios-toggle">
+                        <input type="checkbox" id="enableNotifications">
+                        <span class="ios-toggle-slider"></span>
+                    </label>
+                </label>
+            </div>
+            
+            <button class="control-btn start" id="saveSettingsBtn" style="width: 100%; margin-top: 20px;">
+                <i class="fas fa-save"></i> Save Settings
+            </button>
+        </div>
+        
+        <!-- 备份/恢复面板 -->
+        <div class="file-input-container" id="backupContainer" style="display: none;">
+            <p style="margin-bottom: 10px; color: var(--accent);">Select a backup file to restore your data</p>
+            <label class="file-input-label">
+                <i class="fas fa-folder-open" style="margin-right: 8px;"></i>
+                Choose Backup File
+                <input type="file" id="backupFile" accept=".json">
+            </label>
+        </div>
+        
+        <!-- 关于面板 -->
+        <div id="aboutPanel" style="display: none; padding: 20px 0;">
+            <h3 style="margin-bottom: 15px;">About FlowFocus</h3>
+            <p style="color: var(--accent); line-height: 1.6; margin-bottom: 15px;">
+                FlowFocus is a Pomodoro timer designed to help you maintain focus and productivity. 
+                It uses the Pomodoro Technique, breaking work into intervals (typically 25 minutes) separated by short breaks.
+            </p>
+            <p style="color: var(--accent); line-height: 1.6;">
+                Your data is stored locally using cookies and can be backed up to a file for safekeeping.
+                The backup file contains your focus history for up to one year.
+            </p>
+        </div>
+    </div>
+    
+    <!-- 通知 -->
+    <div class="notification" id="notification"></div>
+    
+    <script>
+        // 全局变量
+        let timer;
+        let isRunning = false;
+        let isFocusTime = true;
+        let timeLeft;
+        let totalTime;
+        let sessionsCompleted = 0;
+        let focusTimeToday = 0;
+        let totalSessions = 0;
+        let totalFocusTime = 0;
+        let sessionsBeforeLongBreak = 4;
+        let sessionCount = 0;
+        
+        // 默认设置
+        let settings = {
+            focusTime: 25,
+            breakTime: 5,
+            longBreakTime: 15,
+            sessionsBeforeLongBreak: 4,
+            enableNotifications: true
+        };
+        
+        // DOM元素
+        const timerDisplay = document.getElementById('timerDisplay');
+        const timerStatus = document.getElementById('timerStatus');
+        const startBtn = document.getElementById('startBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const progressCircle = document.getElementById('progressCircle');
+        const menuButton = document.getElementById('menuButton');
+        const dropdownMenu = document.getElementById('dropdownMenu');
+        const statsSection = document.getElementById('statsSection');
+        const settingsForm = document.getElementById('settingsForm');
+        const backupContainer = document.getElementById('backupContainer');
+        const aboutPanel = document.getElementById('aboutPanel');
+        const notification = document.getElementById('notification');
+        
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSettings();
+            loadStats();
+            updateTimerDisplay();
+            setupEventListeners();
+            updateStatsDisplay();
+            
+            // 设置进度环
+            const radius = progressCircle.r.baseVal.value;
+            const circumference = radius * 2 * Math.PI;
+            progressCircle.style.strokeDasharray = `${circumference} ${circumference}`;
+            progressCircle.style.strokeDashoffset = circumference;
+        });
+        
+        // 设置事件监听器
+        function setupEventListeners() {
+            // 计时器控制
+            startBtn.addEventListener('click', toggleTimer);
+            resetBtn.addEventListener('click', resetTimer);
+            
+            // 菜单按钮
+            menuButton.addEventListener('click', toggleMenu);
+            
+            // 菜单项
+            document.getElementById('settingsItem').addEventListener('click', showSettings);
+            document.getElementById('statisticsItem').addEventListener('click', showStatistics);
+            document.getElementById('backupItem').addEventListener('click', backupData);
+            document.getElementById('restoreItem').addEventListener('click', showRestore);
+            document.getElementById('aboutItem').addEventListener('click', showAbout);
+            
+            // 设置表单
+            document.getElementById('saveSettingsBtn').addEventListener('click', saveSettings);
+            
+            // 文件上传
+            document.getElementById('backupFile').addEventListener('change', restoreData);
+            
+            // 下载备份链接
+            document.getElementById('downloadBackupLink').addEventListener('click', backupData);
+            
+            // 点击外部关闭菜单
+            document.addEventListener('click', function(event) {
+                if (!menuButton.contains(event.target) && !dropdownMenu.contains(event.target)) {
+                    dropdownMenu.classList.remove('active');
+                    menuButton.classList.remove('active');
+                }
+            });
+            
+            // 设置输入框
+            document.getElementById('focusTime').addEventListener('change', function() {
+                if (this.value < 1) this.value = 1;
+                if (this.value > 90) this.value = 90;
+            });
+            
+            document.getElementById('breakTime').addEventListener('change', function() {
+                if (this.value < 1) this.value = 1;
+                if (this.value > 30) this.value = 30;
+            });
+            
+            document.getElementById('longBreakTime').addEventListener('change', function() {
+                if (this.value < 1) this.value = 1;
+                if (this.value > 45) this.value = 45;
+            });
+            
+            document.getElementById('sessionsBeforeLongBreak').addEventListener('change', function() {
+                if (this.value < 1) this.value = 1;
+                if (this.value > 10) this.value = 10;
+            });
+        }
+        
+        // 切换菜单显示
+        function toggleMenu() {
+            dropdownMenu.classList.toggle('active');
+            menuButton.classList.toggle('active');
+        }
+        
+        // 显示设置面板
+        function showSettings() {
+            statsSection.style.display = 'none';
+            settingsForm.style.display = 'block';
+            backupContainer.style.display = 'none';
+            aboutPanel.style.display = 'none';
+            
+            // 填充设置值
+            document.getElementById('focusTime').value = settings.focusTime;
+            document.getElementById('breakTime').value = settings.breakTime;
+            document.getElementById('longBreakTime').value = settings.longBreakTime;
+            document.getElementById('sessionsBeforeLongBreak').value = settings.sessionsBeforeLongBreak;
+            document.getElementById('enableNotifications').checked = settings.enableNotifications;
+            
+            dropdownMenu.classList.remove('active');
+            menuButton.classList.remove('active');
+        }
+        
+        // 显示统计面板
+        function showStatistics() {
+            statsSection.style.display = 'block';
+            settingsForm.style.display = 'none';
+            backupContainer.style.display = 'none';
+            aboutPanel.style.display = 'none';
+            updateStatsDisplay();
+            dropdownMenu.classList.remove('active');
+            menuButton.classList.remove('active');
+        }
+        
+        // 显示恢复面板
+        function showRestore() {
+            statsSection.style.display = 'none';
+            settingsForm.style.display = 'none';
+            backupContainer.style.display = 'block';
+            aboutPanel.style.display = 'none';
+            dropdownMenu.classList.remove('active');
+            menuButton.classList.remove('active');
+        }
+        
+        // 显示关于面板
+        function showAbout() {
+            statsSection.style.display = 'none';
+            settingsForm.style.display = 'none';
+            backupContainer.style.display = 'none';
+            aboutPanel.style.display = 'block';
+            dropdownMenu.classList.remove('active');
+            menuButton.classList.remove('active');
+        }
+        
+        // 保存设置
+        function saveSettings() {
+            settings.focusTime = parseInt(document.getElementById('focusTime').value);
+            settings.breakTime = parseInt(document.getElementById('breakTime').value);
+            settings.longBreakTime = parseInt(document.getElementById('longBreakTime').value);
+            settings.sessionsBeforeLongBreak = parseInt(document.getElementById('sessionsBeforeLongBreak').value);
+            settings.enableNotifications = document.getElementById('enableNotifications').checked;
+            
+            saveSettingsToCookie();
+            resetTimer();
+            showNotification('Settings saved successfully!', 'success');
+            
+            // 返回统计视图
+            setTimeout(showStatistics, 500);
+        }
+        
+        // 切换计时器状态
+        function toggleTimer() {
+            if (!isRunning) {
+                startTimer();
+            } else {
+                pauseTimer();
+            }
+        }
+        
+        // 开始计时器
+        function startTimer() {
+            if (!isRunning) {
+                isRunning = true;
+                startBtn.innerHTML = '<i class="fas fa-pause"></i> Pause';
+                startBtn.classList.add('start');
+                
+                // 如果是第一次启动，设置时间
+                if (!timeLeft) {
+                    if (isFocusTime) {
+                        timeLeft = settings.focusTime * 60;
+                        totalTime = timeLeft;
+                    } else {
+                        timeLeft = (sessionCount % settings.sessionsBeforeLongBreak === 0 ? 
+                                  settings.longBreakTime : settings.breakTime) * 60;
+                        totalTime = timeLeft;
+                    }
+                }
+                
+                timer = setInterval(updateTimer, 1000);
+            }
+        }
+        
+        // 暂停计时器
+        function pauseTimer() {
+            if (isRunning) {
+                isRunning = false;
+                startBtn.innerHTML = '<i class="fas fa-play"></i> Resume';
+                clearInterval(timer);
+            }
+        }
+        
+        // 重置计时器
+        function resetTimer() {
+            clearInterval(timer);
+            isRunning = false;
+            startBtn.innerHTML = '<i class="fas fa-play"></i> Start';
+            
+            if (isFocusTime) {
+                timeLeft = settings.focusTime * 60;
+                totalTime = timeLeft;
+                timerStatus.textContent = 'Ready to Focus';
+            } else {
+                timeLeft = (sessionCount % settings.sessionsBeforeLongBreak === 0 ? 
+                          settings.longBreakTime : settings.breakTime) * 60;
+                totalTime = timeLeft;
+                timerStatus.textContent = 'Break Time';
+            }
+            
+            updateTimerDisplay();
+            updateProgressCircle();
+        }
+        
+        // 更新计时器
+        function updateTimer() {
+            timeLeft--;
+            
+            if (timeLeft <= 0) {
+                clearInterval(timer);
+                isRunning = false;
+                startBtn.innerHTML = '<i class="fas fa-play"></i> Start';
+                
+                // 切换模式
+                if (isFocusTime) {
+                    // 完成一个专注会话
+                    sessionCount++;
+                    sessionsCompleted++;
+                    focusTimeToday += settings.focusTime;
+                    totalSessions++;
+                    totalFocusTime += settings.focusTime;
+                    
+                    // 保存数据
+                    saveStatsToCookie();
+                    updateStatsDisplay();
+                    
+                    // 显示通知
+                    if (settings.enableNotifications) {
+                        showNotification('Focus session completed! Time for a break.', 'success');
+                    }
+                    
+                    // 切换到休息时间
+                    isFocusTime = false;
+                    timerStatus.textContent = sessionCount % settings.sessionsBeforeLongBreak === 0 ? 
+                                            'Long Break Time' : 'Break Time';
+                    timeLeft = (sessionCount % settings.sessionsBeforeLongBreak === 0 ? 
+                              settings.longBreakTime : settings.breakTime) * 60;
+                    totalTime = timeLeft;
+                } else {
+                    // 休息时间结束
+                    if (settings.enableNotifications) {
+                        showNotification('Break is over! Ready to focus?', 'success');
+                    }
+                    
+                    // 切换到专注时间
+                    isFocusTime = true;
+                    timerStatus.textContent = 'Focus Time';
+                    timeLeft = settings.focusTime * 60;
+                    totalTime = timeLeft;
+                }
+            }
+            
+            updateTimerDisplay();
+            updateProgressCircle();
+        }
+        
+        // 更新计时器显示
+        function updateTimerDisplay() {
+            if (!timeLeft) {
+                if (isFocusTime) {
+                    timeLeft = settings.focusTime * 60;
+                    totalTime = timeLeft;
+                } else {
+                    timeLeft = (sessionCount % settings.sessionsBeforeLongBreak === 0 ? 
+                              settings.longBreakTime : settings.breakTime) * 60;
+                    totalTime = timeLeft;
+                }
+            }
+            
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+        
+        // 更新进度环
+        function updateProgressCircle() {
+            if (!totalTime) return;
+            
+            const radius = progressCircle.r.baseVal.value;
+            const circumference = radius * 2 * Math.PI;
+            const offset = circumference - (timeLeft / totalTime) * circumference;
+            progressCircle.style.strokeDashoffset = offset;
+        }
+        
+        // 更新统计显示
+        function updateStatsDisplay() {
+            document.getElementById('sessionsToday').textContent = sessionsCompleted;
+            document.getElementById('focusTimeToday').textContent = focusTimeToday + 'min';
+            document.getElementById('totalSessions').textContent = totalSessions;
+            document.getElementById('totalFocusTime').textContent = totalFocusTime + 'min';
+        }
+        
+        // 显示通知
+        function showNotification(message, type = 'success') {
+            notification.textContent = message;
+            notification.className = 'notification';
+            notification.classList.add(type);
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
+        // 备份数据
+        function backupData() {
+            const data = {
+                settings: settings,
+                stats: {
+                    sessionsCompleted: sessionsCompleted,
+                    focusTimeToday: focusTimeToday,
+                    totalSessions: totalSessions,
+                    totalFocusTime: totalFocusTime,
+                    sessionCount: sessionCount
+                },
+                timestamp: new Date().toISOString(),
+                backupYear: new Date().getFullYear()
+            };
+            
+            const dataStr = JSON.stringify(data, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(dataBlob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `pomodoro-backup-${new Date().toISOString().slice(0, 10)}.json`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            
+            showNotification('Backup file downloaded successfully!', 'success');
+        }
+        
+        // 恢复数据
+        function restoreData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    
+                    // 检查备份是否有效（一年内）
+                    const backupDate = new Date(data.timestamp);
+                    const currentDate = new Date();
+                    const oneYearAgo = new Date();
+                    oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+                    
+                    if (backupDate < oneYearAgo) {
+                        showNotification('This backup is over a year old and cannot be restored.', 'error');
+                        return;
+                    }
+                    
+                    // 恢复设置
+                    if (data.settings) {
+                        settings = data.settings;
+                        saveSettingsToCookie();
+                    }
+                    
+                    // 恢复统计数据
+                    if (data.stats) {
+                        sessionsCompleted = data.stats.sessionsCompleted || 0;
+                        focusTimeToday = data.stats.focusTimeToday || 0;
+                        totalSessions = data.stats.totalSessions || 0;
+                        totalFocusTime = data.stats.totalFocusTime || 0;
+                        sessionCount = data.stats.sessionCount || 0;
+                        saveStatsToCookie();
+                    }
+                    
+                    // 更新显示
+                    updateStatsDisplay();
+                    resetTimer();
+                    
+                    showNotification('Data restored successfully!', 'success');
+                    
+                    // 清空文件输入
+                    document.getElementById('backupFile').value = '';
+                    
+                    // 返回统计视图
+                    setTimeout(showStatistics, 500);
+                } catch (error) {
+                    showNotification('Error restoring backup file. Please check the file format.', 'error');
+                }
+            };
+            
+            reader.readAsText(file);
+        }
+        
+        // Cookie 相关函数
+        function saveSettingsToCookie() {
+            document.cookie = `pomodoroSettings=${JSON.stringify(settings)}; max-age=${60*60*24*365}; path=/`;
+        }
+        
+        function loadSettings() {
+            const cookie = document.cookie.split('; ').find(row => row.startsWith('pomodoroSettings='));
+            if (cookie) {
+                try {
+                    settings = JSON.parse(cookie.split('=')[1]);
+                } catch (e) {
+                    console.error('Error loading settings from cookie:', e);
+                }
+            }
+        }
+        
+        function saveStatsToCookie() {
+            const stats = {
+                sessionsCompleted,
+                focusTimeToday,
+                totalSessions,
+                totalFocusTime,
+                sessionCount,
+                lastUpdated: new Date().toISOString()
+            };
+            document.cookie = `pomodoroStats=${JSON.stringify(stats)}; max-age=${60*60*24*365}; path=/`;
+        }
+        
+        function loadStats() {
+            const cookie = document.cookie.split('; ').find(row => row.startsWith('pomodoroStats='));
+            if (cookie) {
+                try {
+                    const stats = JSON.parse(cookie.split('=')[1]);
+                    sessionsCompleted = stats.sessionsCompleted || 0;
+                    focusTimeToday = stats.focusTimeToday || 0;
+                    totalSessions = stats.totalSessions || 0;
+                    totalFocusTime = stats.totalFocusTime || 0;
+                    sessionCount = stats.sessionCount || 0;
+                    
+                    // 检查是否是今天的数据，如果不是则重置今日数据
+                    const lastUpdated = new Date(stats.lastUpdated);
+                    const today = new Date();
+                    if (lastUpdated.toDateString() !== today.toDateString()) {
+                        sessionsCompleted = 0;
+                        focusTimeToday = 0;
+                    }
+                } catch (e) {
+                    console.error('Error loading stats from cookie:', e);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
