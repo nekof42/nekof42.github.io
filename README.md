@@ -1,11 +1,16 @@
 # Spotlight Current Version
 
-## [5.0.2-Fritillaria] - 2024-08-06
+## [6.0.0-Rosetta] - 2026-02-21
 
-### Fixed
+### Features
 
-* 修复 移动端响应式界面失效的问题
-  ersion
+* 全面更新原创UI 6.0
+* 整体界面更简洁，更扁平化
+* 增加”Flows“网页版番茄钟功能
+* 将`index.html`设置为个人超链接
+* 暂停博客功能（正在转型新的workflow）
+* 使用了取名绘制的banner（大感谢）
+* 重写`pointer, cursor`的逻辑
 
 ---
 

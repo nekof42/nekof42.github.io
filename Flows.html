@@ -1,167 +1,180 @@
 <!DOCTYPE html>
-<html lang="en-us, zh-cn">
+<html lang="en-us">
+
 <head>
+    <title>Flows</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FlowFocus</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/main.css">
 </head>
+
 <body>
-    <!-- 主容器 -->
+
+    <div id="pointer"></div>
+    <!-- Body -->
     <div class="container fade-in">
-        <!-- 头部 -->
+        <!-- Header -->
         <div class="header">
             <div class="logo">
-                <div class="logo-text">FlowFocus</div>
+                <div class="logo-text unselectable">Flows</div>
             </div>
-            
-            <!-- 菜单按钮 -->
-            <div class="menu-button" id="menuButton">
-                <i class="fas fa-ellipsis-h"></i>
+
+            <!-- Menu -->
+            <div class="menu-button highlight unselectable" id="menuButton">
+                <img src="img/more.svg" class="unselectable">
             </div>
-            
-            <!-- 下拉菜单 -->
+
+            <!-- Dropdown -->
             <div class="dropdown-menu" id="dropdownMenu">
-                <div class="menu-item" id="settingsItem">
+                <div class="menu-item unselectable" id="settingsItem">
                     <span>Timer Settings</span>
                 </div>
-                <div class="menu-item" id="statisticsItem">
+                <div class="menu-item unselectable" id="statisticsItem">
                     <span>Statistics</span>
                 </div>
                 <div class="menu-divider"></div>
-                <div class="menu-item" id="backupItem">
+                <div class="menu-item unselectable" id="backupItem">
                     <span>Backup Data</span>
                 </div>
-                <div class="menu-item" id="restoreItem">
+                <div class="menu-item unselectable" id="restoreItem">
                     <span>Restore Data</span>
                 </div>
                 <div class="menu-divider"></div>
-                <div class="menu-item" id="aboutItem">
+                <div class="menu-item unselectable" id="aboutItem">
                     <span>About</span>
                 </div>
             </div>
         </div>
-        
-        <!-- 计时器区域 -->
+
+        <!-- Timer -->
         <div class="timer-section">
-            <div class="timer-status" id="timerStatus">Ready to Focus</div>
-            
-            <!-- 进度环 -->
+            <div class="timer-status unselectable" id="timerStatus">Ready to Focus</div>
+
+            <!-- Ring -->
             <div class="progress-ring">
                 <svg class="progress-ring-circle" width="100%" height="100%" viewBox="0 0 100 100">
                     <circle class="progress-ring-bg" cx="50" cy="50" r="45"></circle>
-                    <circle class="progress-ring-fill" cx="50" cy="50" r="45" 
-                            stroke-dasharray="283" stroke-dashoffset="283" id="progressCircle"></circle>
+                    <circle class="progress-ring-fill" cx="50" cy="50" r="45" stroke-dasharray="283"
+                        stroke-dashoffset="283" id="progressCircle"></circle>
                 </svg>
                 <div class="timer-inside">
-                    <div class="timer-display" id="timerDisplay">25:00</div>
+                    <div class="timer-display unselectable" id="timerDisplay">25:00</div>
                 </div>
             </div>
-            
-            <!-- 控制按钮 -->
+
+            <!-- Ctrls -->
             <div class="controls">
-                <button class="control-btn start" id="startBtn">
-                    <i class="fas fa-play"></i> Start
+                <button class="control-btn start highlight unselectable" id="startBtn">
+                    Start
                 </button>
-                <button class="control-btn reset" id="resetBtn">
-                    <i class="fas fa-redo"></i> Reset
+                <button class="control-btn reset  unselectable highlight" id="resetBtn">
+                    Reset
                 </button>
             </div>
         </div>
-        
-        <!-- 统计区域 -->
+
+        <!-- Stats -->
         <div id="statsSection">
             <div class="stats-grid">
                 <div class="stat-card">
-                    <div class="stat-value" id="sessionsToday">0</div>
-                    <div class="stat-label">Sessions Completed</div>
+                    <div class="stat-value unselectable" id="sessionsToday">0</div>
+                    <div class="stat-label unselectable">Sessions Completed</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-value" id="focusTimeToday">0min</div>
-                    <div class="stat-label">Focus Time</div>
+                    <div class="stat-value unselectable" id="focusTimeToday">0min</div>
+                    <div class="stat-label unselectable">Focus Time</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-value" id="totalSessions">0</div>
-                    <div class="stat-label">Total Sessions</div>
+                    <div class="stat-value unselectable" id="totalSessions">0</div>
+                    <div class="stat-label unselectable">Total Sessions</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-value" id="totalFocusTime">0min</div>
-                    <div class="stat-label">Total Focus Time</div>
+                    <div class="stat-value unselectable" id="totalFocusTime">0min</div>
+                    <div class="stat-label unselectable">Total Focus Time</div>
                 </div>
             </div>
+
         </div>
-        
-        <!-- 设置面板 (默认隐藏) -->
+
+        <!-- Settings -->
         <div class="settings-form" id="settingsForm" style="display: none;">
             <div class="form-group">
-                <label class="form-label">Focus Duration (minutes)</label>
-                <input type="number" class="form-input" id="focusTime" min="1" max="90" value="25">
+                <label class="form-label unselectable">Focus Duration (minutes)</label>
+                <input type="number" class="form-input unselectable" id="focusTime" min="1" max="90" value="25">
             </div>
-            
+
             <div class="form-group">
-                <label class="form-label">Break Duration (minutes)</label>
-                <input type="number" class="form-input" id="breakTime" min="1" max="30" value="5">
+                <label class="form-label unselectable">Break Duration (minutes)</label>
+                <input type="number" class="form-input unselectable" id="breakTime" min="1" max="30" value="5">
             </div>
-            
+
             <div class="form-group">
-                <label class="form-label">Long Break Duration (minutes)</label>
-                <input type="number" class="form-input" id="longBreakTime" min="1" max="45" value="15">
+                <label class="form-label unselectable">Long Break Duration (minutes)</label>
+                <input type="number" class="form-input unselectable" id="longBreakTime" min="1" max="45" value="15">
             </div>
-            
+
             <div class="form-group">
-                <label class="form-label">Sessions before Long Break</label>
-                <input type="number" class="form-input" id="sessionsBeforeLongBreak" min="1" max="10" value="4">
+                <label class="form-label unselectable">Sessions before Long Break</label>
+                <input type="number" class="form-input unselectable" id="sessionsBeforeLongBreak" min="1" max="10"
+                    value="4">
             </div>
-            
+
             <div class="form-group">
                 <label style="display: flex; justify-content: space-between; align-items: center;">
-                    <span class="form-label">Enable Notifications</span>
+                    <span class="form-label unselectable">Enable Notifications</span>
                     <label class="toggle">
                         <input type="checkbox" id="enableNotifications">
                         <span class="toggle-slider"></span>
                     </label>
                 </label>
             </div>
-            
-            <button class="control-btn start" id="saveSettingsBtn" style="width: 100%; margin-top: 20px;">
-                <i class="fas fa-save"></i> Save Settings
+
+            <button class="control-btn start highlight unselectable" id="saveSettingsBtn"
+                style="width: 40%; margin-top: 20px;margin-left: 30%;">
+                Save Settings
             </button>
         </div>
-        
-        <!-- 备份/恢复面板 -->
+
+        <!-- Backup/Restore -->
         <div class="file-input-container" id="backupContainer" style="display: none;">
-            <p style="margin-bottom: 10px; color: var(--accent);">Select a backup file to restore your data</p>
-            <label class="file-input-label">
-                <i class="fas fa-folder-open" style="margin-right: 8px;"></i>
+            <p style="margin-bottom: 10px; color: var(--accent);" class="unselectable">Select a backup file to restore
+                your data</p>
+            <label class="file-input-label unselectable">
                 Choose Backup File
                 <input type="file" id="backupFile" accept=".json">
             </label>
         </div>
-        
-        <!-- 关于面板 -->
+
+
+        <!-- About -->
         <div id="aboutPanel" style="display: none; padding: 20px 0;">
-            <h3 style="margin-bottom: 15px;">About FlowFocus</h3>
+            <h3 style="margin-bottom: 15px;">About Flows</h3>
             <p style="color: var(--accent); line-height: 1.6; margin-bottom: 15px;">
-                FlowFocus is a Pomodoro timer designed to help you maintain focus and productivity. 
-                It uses the Pomodoro Technique, breaking work into intervals (typically 25 minutes) separated by short breaks.
+                Flows is a Pomodoro timer designed to help you maintain focus and productivity.
+                It uses the Pomodoro Technique, breaking work into intervals (typically 25 minutes) separated by short
+                breaks.
                 <br><br>
-             Your data is stored locally using cookies and can be backed up to a file for safekeeping.
+                Your data is stored locally using cookies and can be backed up to a file for safekeeping.
                 The backup file contains your focus history for up to one year.
                 <br><br>
-                By the way, this website is written by DeepSeek AI mainly, but it also have some parts are wrtten by myself.
+                By the way, this website is written by DeepSeek AI mainly, but it also have some parts (like pointer,
+                UI) are wrtten by myself.
                 <br><br>
                 However, thank you for using it, that means a lot to me.
+                <br><br>
+                @ N3KOG0H4N ALL RIGHTS RESERVED
             </p>
+            <!-- 装饰脚注 -->
 
         </div>
     </div>
-    
-    <!-- 通知 -->
-    <div class="notification" id="notification"></div>
-    
+
+    <!-- Notifications -->
+    <div class="notification unselectable unselectable" id="notification"></div>
+
+
+    <script src="js/main.js"></script>
     <script>
-        // 全局变量
         let timer;
         let isRunning = false;
         let isFocusTime = true;
@@ -173,8 +186,8 @@
         let totalFocusTime = 0;
         let sessionsBeforeLongBreak = 4;
         let sessionCount = 0;
-        
-        // 默认设置
+
+        // Set
         let settings = {
             focusTime: 25,
             breakTime: 5,
@@ -182,8 +195,8 @@
             sessionsBeforeLongBreak: 4,
             enableNotifications: true
         };
-        
-        // DOM元素
+
+        // DOM
         const timerDisplay = document.getElementById('timerDisplay');
         const timerStatus = document.getElementById('timerStatus');
         const startBtn = document.getElementById('startBtn');
@@ -196,101 +209,94 @@
         const backupContainer = document.getElementById('backupContainer');
         const aboutPanel = document.getElementById('aboutPanel');
         const notification = document.getElementById('notification');
-        
+
         // 初始化
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             loadSettings();
             loadStats();
             updateTimerDisplay();
             setupEventListeners();
             updateStatsDisplay();
-            
+
             // 设置进度环
             const radius = progressCircle.r.baseVal.value;
             const circumference = radius * 2 * Math.PI;
             progressCircle.style.strokeDasharray = `${circumference} ${circumference}`;
             progressCircle.style.strokeDashoffset = circumference;
         });
-        
+
         // 设置事件监听器
         function setupEventListeners() {
             // 计时器控制
             startBtn.addEventListener('click', toggleTimer);
             resetBtn.addEventListener('click', resetTimer);
-            
+
             // 菜单按钮
             menuButton.addEventListener('click', toggleMenu);
-            
+
             // 菜单项
             document.getElementById('settingsItem').addEventListener('click', showSettings);
             document.getElementById('statisticsItem').addEventListener('click', showStatistics);
             document.getElementById('backupItem').addEventListener('click', backupData);
             document.getElementById('restoreItem').addEventListener('click', showRestore);
             document.getElementById('aboutItem').addEventListener('click', showAbout);
-            
+
             // 设置表单
             document.getElementById('saveSettingsBtn').addEventListener('click', saveSettings);
-            
+
             // 文件上传
             document.getElementById('backupFile').addEventListener('change', restoreData);
-            
+
             // 下载备份链接
             document.getElementById('downloadBackupLink').addEventListener('click', backupData);
-            
-            // 点击外部关闭菜单
-            document.addEventListener('click', function(event) {
-                if (!menuButton.contains(event.target) && !dropdownMenu.contains(event.target)) {
-                    dropdownMenu.classList.remove('active');
-                    menuButton.classList.remove('active');
-                }
-            });
-            
+
+
             // 设置输入框
-            document.getElementById('focusTime').addEventListener('change', function() {
+            document.getElementById('focusTime').addEventListener('change', function () {
                 if (this.value < 1) this.value = 1;
                 if (this.value > 90) this.value = 90;
             });
-            
-            document.getElementById('breakTime').addEventListener('change', function() {
+
+            document.getElementById('breakTime').addEventListener('change', function () {
                 if (this.value < 1) this.value = 1;
                 if (this.value > 30) this.value = 30;
             });
-            
-            document.getElementById('longBreakTime').addEventListener('change', function() {
+
+            document.getElementById('longBreakTime').addEventListener('change', function () {
                 if (this.value < 1) this.value = 1;
                 if (this.value > 45) this.value = 45;
             });
-            
-            document.getElementById('sessionsBeforeLongBreak').addEventListener('change', function() {
+
+            document.getElementById('sessionsBeforeLongBreak').addEventListener('change', function () {
                 if (this.value < 1) this.value = 1;
                 if (this.value > 10) this.value = 10;
             });
         }
-        
+
         // 切换菜单显示
         function toggleMenu() {
             dropdownMenu.classList.toggle('active');
             menuButton.classList.toggle('active');
         }
-        
+
         // 显示设置面板
         function showSettings() {
             statsSection.style.display = 'none';
             settingsForm.style.display = 'block';
             backupContainer.style.display = 'none';
             aboutPanel.style.display = 'none';
-            
+
             // 填充设置值
             document.getElementById('focusTime').value = settings.focusTime;
             document.getElementById('breakTime').value = settings.breakTime;
             document.getElementById('longBreakTime').value = settings.longBreakTime;
             document.getElementById('sessionsBeforeLongBreak').value = settings.sessionsBeforeLongBreak;
             document.getElementById('enableNotifications').checked = settings.enableNotifications;
-            
+
             dropdownMenu.classList.remove('active');
             menuButton.classList.remove('active');
         }
-        
+
         // 显示统计面板
         function showStatistics() {
             statsSection.style.display = 'block';
@@ -301,7 +307,7 @@
             dropdownMenu.classList.remove('active');
             menuButton.classList.remove('active');
         }
-        
+
         // 显示恢复面板
         function showRestore() {
             statsSection.style.display = 'none';
@@ -311,7 +317,7 @@
             dropdownMenu.classList.remove('active');
             menuButton.classList.remove('active');
         }
-        
+
         // 显示关于面板
         function showAbout() {
             statsSection.style.display = 'none';
@@ -321,7 +327,7 @@
             dropdownMenu.classList.remove('active');
             menuButton.classList.remove('active');
         }
-        
+
         // 保存设置
         function saveSettings() {
             settings.focusTime = parseInt(document.getElementById('focusTime').value);
@@ -329,15 +335,15 @@
             settings.longBreakTime = parseInt(document.getElementById('longBreakTime').value);
             settings.sessionsBeforeLongBreak = parseInt(document.getElementById('sessionsBeforeLongBreak').value);
             settings.enableNotifications = document.getElementById('enableNotifications').checked;
-            
+
             saveSettingsToCookie();
             resetTimer();
             showNotification('Settings saved successfully!', 'success');
-            
+
             // 返回统计视图
             setTimeout(showStatistics, 500);
         }
-        
+
         // 切换计时器状态
         function toggleTimer() {
             if (!isRunning) {
@@ -346,30 +352,30 @@
                 pauseTimer();
             }
         }
-        
+
         // 开始计时器
         function startTimer() {
             if (!isRunning) {
                 isRunning = true;
                 startBtn.innerHTML = '<i class="fas fa-pause"></i> Pause';
                 startBtn.classList.add('start');
-                
+
                 // 如果是第一次启动，设置时间
                 if (!timeLeft) {
                     if (isFocusTime) {
                         timeLeft = settings.focusTime * 60;
                         totalTime = timeLeft;
                     } else {
-                        timeLeft = (sessionCount % settings.sessionsBeforeLongBreak === 0 ? 
-                                  settings.longBreakTime : settings.breakTime) * 60;
+                        timeLeft = (sessionCount % settings.sessionsBeforeLongBreak === 0 ?
+                            settings.longBreakTime : settings.breakTime) * 60;
                         totalTime = timeLeft;
                     }
                 }
-                
+
                 timer = setInterval(updateTimer, 1000);
             }
         }
-        
+
         // 暂停计时器
         function pauseTimer() {
             if (isRunning) {
@@ -378,37 +384,37 @@
                 clearInterval(timer);
             }
         }
-        
+
         // 重置计时器
         function resetTimer() {
             clearInterval(timer);
             isRunning = false;
             startBtn.innerHTML = '<i class="fas fa-play"></i> Start';
-            
+
             if (isFocusTime) {
                 timeLeft = settings.focusTime * 60;
                 totalTime = timeLeft;
                 timerStatus.textContent = 'Ready to Focus';
             } else {
-                timeLeft = (sessionCount % settings.sessionsBeforeLongBreak === 0 ? 
-                          settings.longBreakTime : settings.breakTime) * 60;
+                timeLeft = (sessionCount % settings.sessionsBeforeLongBreak === 0 ?
+                    settings.longBreakTime : settings.breakTime) * 60;
                 totalTime = timeLeft;
                 timerStatus.textContent = 'Break Time';
             }
-            
+
             updateTimerDisplay();
             updateProgressCircle();
         }
-        
+
         // 更新计时器
         function updateTimer() {
             timeLeft--;
-            
+
             if (timeLeft <= 0) {
                 clearInterval(timer);
                 isRunning = false;
                 startBtn.innerHTML = '<i class="fas fa-play"></i> Start';
-                
+
                 // 切换模式
                 if (isFocusTime) {
                     // 完成一个专注会话
@@ -417,29 +423,29 @@
                     focusTimeToday += settings.focusTime;
                     totalSessions++;
                     totalFocusTime += settings.focusTime;
-                    
+
                     // 保存数据
                     saveStatsToCookie();
                     updateStatsDisplay();
-                    
+
                     // 显示通知
                     if (settings.enableNotifications) {
                         showNotification('Focus session completed! Time for a break.', 'success');
                     }
-                    
+
                     // 切换到休息时间
                     isFocusTime = false;
-                    timerStatus.textContent = sessionCount % settings.sessionsBeforeLongBreak === 0 ? 
-                                            'Long Break Time' : 'Break Time';
-                    timeLeft = (sessionCount % settings.sessionsBeforeLongBreak === 0 ? 
-                              settings.longBreakTime : settings.breakTime) * 60;
+                    timerStatus.textContent = sessionCount % settings.sessionsBeforeLongBreak === 0 ?
+                        'Long Break Time' : 'Break Time';
+                    timeLeft = (sessionCount % settings.sessionsBeforeLongBreak === 0 ?
+                        settings.longBreakTime : settings.breakTime) * 60;
                     totalTime = timeLeft;
                 } else {
                     // 休息时间结束
                     if (settings.enableNotifications) {
                         showNotification('Break is over! Ready to focus?', 'success');
                     }
-                    
+
                     // 切换到专注时间
                     isFocusTime = true;
                     timerStatus.textContent = 'Focus Time';
@@ -447,11 +453,11 @@
                     totalTime = timeLeft;
                 }
             }
-            
+
             updateTimerDisplay();
             updateProgressCircle();
         }
-        
+
         // 更新计时器显示
         function updateTimerDisplay() {
             if (!timeLeft) {
@@ -459,27 +465,27 @@
                     timeLeft = settings.focusTime * 60;
                     totalTime = timeLeft;
                 } else {
-                    timeLeft = (sessionCount % settings.sessionsBeforeLongBreak === 0 ? 
-                              settings.longBreakTime : settings.breakTime) * 60;
+                    timeLeft = (sessionCount % settings.sessionsBeforeLongBreak === 0 ?
+                        settings.longBreakTime : settings.breakTime) * 60;
                     totalTime = timeLeft;
                 }
             }
-            
+
             const minutes = Math.floor(timeLeft / 60);
             const seconds = timeLeft % 60;
             timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
         }
-        
+
         // 更新进度环
         function updateProgressCircle() {
             if (!totalTime) return;
-            
+
             const radius = progressCircle.r.baseVal.value;
             const circumference = radius * 2 * Math.PI;
             const offset = circumference - (timeLeft / totalTime) * circumference;
             progressCircle.style.strokeDashoffset = offset;
         }
-        
+
         // 更新统计显示
         function updateStatsDisplay() {
             document.getElementById('sessionsToday').textContent = sessionsCompleted;
@@ -487,19 +493,19 @@
             document.getElementById('totalSessions').textContent = totalSessions;
             document.getElementById('totalFocusTime').textContent = totalFocusTime + 'min';
         }
-        
+
         // 显示通知
         function showNotification(message, type = 'success') {
             notification.textContent = message;
             notification.className = 'notification';
             notification.classList.add(type);
             notification.classList.add('show');
-            
+
             setTimeout(() => {
                 notification.classList.remove('show');
             }, 3000);
         }
-        
+
         // 备份数据
         function backupData() {
             const data = {
@@ -514,11 +520,11 @@
                 timestamp: new Date().toISOString(),
                 backupYear: new Date().getFullYear()
             };
-            
+
             const dataStr = JSON.stringify(data, null, 2);
-            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
             const url = URL.createObjectURL(dataBlob);
-            
+
             const link = document.createElement('a');
             link.href = url;
             link.download = `pomodoro-backup-${new Date().toISOString().slice(0, 10)}.json`;
@@ -526,37 +532,37 @@
             link.click();
             document.body.removeChild(link);
             URL.revokeObjectURL(url);
-            
+
             showNotification('Backup file downloaded successfully!', 'success');
         }
-        
+
         // 恢复数据
         function restoreData(event) {
             const file = event.target.files[0];
             if (!file) return;
-            
+
             const reader = new FileReader();
-            reader.onload = function(e) {
+            reader.onload = function (e) {
                 try {
                     const data = JSON.parse(e.target.result);
-                    
+
                     // 检查备份是否有效（一年内）
                     const backupDate = new Date(data.timestamp);
                     const currentDate = new Date();
                     const oneYearAgo = new Date();
                     oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
-                    
+
                     if (backupDate < oneYearAgo) {
                         showNotification('This backup is over a year old and cannot be restored.', 'error');
                         return;
                     }
-                    
+
                     // 恢复设置
                     if (data.settings) {
                         settings = data.settings;
                         saveSettingsToCookie();
                     }
-                    
+
                     // 恢复统计数据
                     if (data.stats) {
                         sessionsCompleted = data.stats.sessionsCompleted || 0;
@@ -566,31 +572,31 @@
                         sessionCount = data.stats.sessionCount || 0;
                         saveStatsToCookie();
                     }
-                    
+
                     // 更新显示
                     updateStatsDisplay();
                     resetTimer();
-                    
+
                     showNotification('Data restored successfully!', 'success');
-                    
+
                     // 清空文件输入
                     document.getElementById('backupFile').value = '';
-                    
+
                     // 返回统计视图
                     setTimeout(showStatistics, 500);
                 } catch (error) {
                     showNotification('Error restoring backup file. Please check the file format.', 'error');
                 }
             };
-            
+
             reader.readAsText(file);
         }
-        
+
         // Cookie 相关函数
         function saveSettingsToCookie() {
-            document.cookie = `pomodoroSettings=${JSON.stringify(settings)}; max-age=${60*60*24*365}; path=/`;
+            document.cookie = `pomodoroSettings=${JSON.stringify(settings)}; max-age=${60 * 60 * 24 * 365}; path=/`;
         }
-        
+
         function loadSettings() {
             const cookie = document.cookie.split('; ').find(row => row.startsWith('pomodoroSettings='));
             if (cookie) {
@@ -601,7 +607,7 @@
                 }
             }
         }
-        
+
         function saveStatsToCookie() {
             const stats = {
                 sessionsCompleted,
@@ -611,9 +617,9 @@
                 sessionCount,
                 lastUpdated: new Date().toISOString()
             };
-            document.cookie = `pomodoroStats=${JSON.stringify(stats)}; max-age=${60*60*24*365}; path=/`;
+            document.cookie = `pomodoroStats=${JSON.stringify(stats)}; max-age=${60 * 60 * 24 * 365}; path=/`;
         }
-        
+
         function loadStats() {
             const cookie = document.cookie.split('; ').find(row => row.startsWith('pomodoroStats='));
             if (cookie) {
@@ -624,7 +630,7 @@
                     totalSessions = stats.totalSessions || 0;
                     totalFocusTime = stats.totalFocusTime || 0;
                     sessionCount = stats.sessionCount || 0;
-                    
+
                     // 检查是否是今天的数据，如果不是则重置今日数据
                     const lastUpdated = new Date(stats.lastUpdated);
                     const today = new Date();
@@ -639,4 +645,5 @@
         }
     </script>
 </body>
+
 </html>
