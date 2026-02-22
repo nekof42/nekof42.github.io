@@ -135,3 +135,31 @@ htmlEl.addEventListener('mousemove', (e) => {
   lastMouseY = e.clientY
   setPosition(e.clientX, e.clientY)
 })
+
+// 滚动时更新 pointer 位置，避免滚动后指针滞留
+window.addEventListener('scroll', () => {
+  // 获取当前鼠标位置下的元素
+  const elem = document.elementFromPoint(lastMouseX, lastMouseY);
+
+  if (elem && elem.classList.contains('a')) {
+    // 鼠标位于带有 class="a" 的元素上：更新 pointer 覆盖该元素
+    const rect = elem.getBoundingClientRect();
+    pointerEl.style.width = rect.width + 'px';
+    pointerEl.style.height = rect.height + 'px';
+    pointerEl.style.borderRadius = '15px';
+    pointerEl.style.transform = `translate(${rect.left}px, ${rect.top}px)`;
+    isHovering = true;
+  } else {
+    // 鼠标不在目标元素上：如果之前是悬浮状态，则退出悬浮
+    if (isHovering) {
+      isHovering = false;
+      pointerEl.style.width = '42px';
+      pointerEl.style.height = '42px';
+      pointerEl.style.borderRadius = '50%';
+    }
+    // 无论是否悬浮，都将 pointer 放回鼠标当前位置（仅在非悬浮时生效）
+    if (window.innerWidth > 768) {
+      setPositionSync(lastMouseX, lastMouseY);
+    }
+  }
+});
